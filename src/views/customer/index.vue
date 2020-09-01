@@ -19,7 +19,7 @@
               <span>手机号：{{item.phone}}</span>
             </div>
           </van-col>
-          <van-col span="6" class="cen-talk" @click="handleView">
+          <van-col span="6" class="cen-talk" @click="handleView(item)">
             查看
             <van-button size="mini" type="danger" icon="phone-o" @click="handleCall(item)">拨号</van-button>
           </van-col>
@@ -41,7 +41,7 @@ export default {
     };
   },
   created() {
-    this.userMessage = this.$storage.userMessage('userMessage')
+    this.userMessage = this.$storage.userMessage("userMessage");
   },
   methods: {
     // 数据初始化
@@ -56,7 +56,8 @@ export default {
           this.dataList = this.dataList.concat(res.data.content);
           this.loading = false;
           this.totalPages = res.data.totalPages;
-          if (this.currPage >= this.currPage.totalPages) {
+          console.log((this.currPage, 1, this.totalPages - 1));
+          if (this.currPage >= this.totalPages - 1) {
             this.finished = true;
           } else {
             this.currPage++;
@@ -69,19 +70,28 @@ export default {
     // 点击客户详情
     getJobDetail() {},
     // 查看详情
-    handleView() {},
+    handleView(item) {
+      this.$storage.setStorage('customerDetails',JSON.stringify(item))
+      this.$router.push('/admin/cusDetails')
+    },
     // 拨号
     handleCall(data) {
-      console.log(this.userMessage)
-      console.log(data)
+      console.log(this.userMessage);
+      console.log(data);
       let params = {
         customerId: data.id,
         customerPhone: data.phone,
         userId: this.userMessage.id,
       };
-      addCallrecord(params).then((res) => {});
+      addCallrecord(params).then((res) => {
+        let a = document.createElement("a");
+        a.setAttribute("href", `tel:${data.phone}`);
+        a.click();
+      });
     },
-    onClickLeft() {},
+    onClickLeft() {
+      this.$router.go(-1)
+    },
   },
 };
 </script>

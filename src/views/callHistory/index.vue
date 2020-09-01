@@ -3,26 +3,19 @@
   <div>
     <div class="static">
       <van-nav-bar title="呼出记录" left-arrow @click-left="onClickLeft" />
-      <!-- tab栏 -->
-      <div class="cen-post">
-        <van-button v-for="(item,index) in companySize" :key="index" size="mini" :class="currIndex ==index?'lightCor':'blackCor' " @click="getMenu(index)">
-          {{item.name}}
-          <van-icon :name="currIndex ==index?'arrow-up':'arrow-down'" />
-        </van-button>
-      </div>
     </div>
     <div class="list_box">
-      <van-empty v-if="!list.length" />
+      <van-empty v-if="!dataList.length" />
       <van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="dataInit">
-        <van-row class="cen-list" v-for="(item,index) in list" :key="index" @click="getJobDetail(item)">
+        <van-row class="cen-list" v-for="(item,index) in dataList" :key="index" @click="getJobDetail(item)">
           <van-col span="18">
-            <h4>{{item.JobName}}</h4>
-            <p>{{item.CorpName}}</p>
+            <h4>{{item.customerName}}</h4>
+            <p>{{item.customerPhone}}</p>
             <div>
-              <span>{{item.Province}}{{item.City}}</span>
+              <span>{{item.userName}}</span>
             </div>
           </van-col>
-          <van-col span="6" class="cen-talk">{{item.SalaryRangeStr}} <p>{{item.DeliveryNum}}人已投递</p></van-col>
+          <!-- <van-col span="6" class="cen-talk">{{item.SalaryRangeStr}} <p>{{item.DeliveryNum}}人已投递</p></van-col> -->
         </van-row>
       </van-list>
     </div>
@@ -34,46 +27,36 @@ import { queryCallrecordOfPage } from '@/apis/apis'
 export default {
   data() {
     return {
-      currIndex: -1,//当前索引
-      companySize: [
-        { name: '地区', value: 1 },
-        { name: '薪资', value: 2 },
-        { name: '学历', value: 3 }
-      ],
-      workList: [],
-      salaryList: [],
-      companyList: [],
-      list: [],
+      dataList: [],
       loading: false,
       finished: false,
-      formData: {
-        PageSize: 10,
-        PageIndex: 1,
-        KeyWord: '',
-        AreaId: 10000,
-        DegreeId: 0,
-        CorpId: 0,
-        SalaryRange: 0,
-      },
+      currPage:0
     };
   },
   created() {
-    // this.dataInit()
+    this.userMessage = this.$storage.userMessage("userMessage");
   },
   components: {  },
   methods: {
     //数据初始化
     dataInit() {
-      queryCallrecordOfPage(this.formData).then(res => {
-        if (res.Items) {
-          this.list = this.list.concat(res.Items);
+      let params = {
+        page:this.currPage,
+        size:20,
+        locatedId:this.userMessage.id
+      }
+      queryCallrecordOfPage(params).then(res => {
+        if (res.code === 0) {
+          this.dataList = this.dataList.concat(res.data.content);
+          console.log(this.dataList)
           // 加载状态结束
           this.loading = false;
           // 数据全部加载完成
-          if (this.formData.PageIndex >= res.TotalPage) {
+          console.log(this.currPage, res.data.totalPages,this.currPage >= res.totalPages)
+          if (this.currPage >= res.data.totalPages-1) {
             this.finished = true;
           } else {
-            this.formData.PageIndex++;
+            this.currPage++;
           }
         }
       })
@@ -96,7 +79,7 @@ export default {
       // })
     },
     clear(){
-      this.formData.PageIndex = 1;
+      this.formData.page = 1;
       this.list = [];
     },
     // 返回
@@ -127,7 +110,7 @@ export default {
   padding: 10px 0;
 }
 .list_box {
-  padding-top: 80px;
+  padding-top: 40px;
   text-align: left;
   background-color: #f2f4f4;
   .cen-list {
@@ -145,41 +128,9 @@ export default {
     p {
       color: #666;
     }
-    .cen-talk {
-      color: #1a76f3;
-      font-size: 16px;
-      text-align: right;
-      line-height: 2;
-      p {
-        font-size: 12px;
-      }
-    }
   }
 }
-.cen-post {
-  padding: 10px;
-  display: flex;
-  justify-content: space-around;
-  width: 95%;
-  .van-button {
-    width: 90px;
-    height: 30px;
-    font-size: 14px;
-    border-radius: 4px;
-    flex: 1;
-  }
-  .van-icon {
-    margin-left: 5px;
-  }
-  .lightCor {
-    background-color: #1a76f3;
-    color: #fff;
-  }
-  .blackCor {
-    background-color: #fff;
-  }
-}
-
+ 
 .van-pagination {
   margin-top: 20px;
   background-color: #fff;

@@ -17,9 +17,9 @@ export default function (path, params, method = "GET", headerType = "json") {
     if (process.env.NODE_ENV == "development") {
         baseURL = "/apis"
     } else if (process.env.NODE_ENV == 'production') {
-        baseURL = 'http://airjob.333job.com:86/'  //正式
+        baseURL = 'http://119.96.239.163:8088'  //正式
     } else if (process.env.NODE_ENV == 'testing') {
-        baseURL = 'http://192.168.101.106:8200/'
+        baseURL = 'http://119.96.239.163:8088'
     }
 
     //  设置请求头
@@ -101,6 +101,10 @@ export default function (path, params, method = "GET", headerType = "json") {
     })
     //请求响应
     axios.interceptors.response.use(response => {
+        if (response.data.code == 401) {
+            storage.removeCookie("token");
+            router.push('/')
+        }
         setTimeout(() => {
             Toast.clear();
         }, 2000)

@@ -13,4 +13,9 @@ export default [{
   name: "呼叫记录",
   component: resolve => require(["@/views/callHistory/index"], resolve)
 },
+{
+  path: "/admin/cusDetails",
+  name: "客户详情",
+  component: resolve => require(["@/views/customer/cusDetails"], resolve)
+}
 ];
