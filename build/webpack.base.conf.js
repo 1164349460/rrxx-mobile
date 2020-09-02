@@ -11,9 +11,9 @@ function resolve(dir) {
 
 let publicPath = ''
 if (process.env.NODE_ENV === 'production') {
-    publicPath = '/crmm' + config.build.assetsPublicPath
+    publicPath = '/crm' + config.build.assetsPublicPath
 } else if (process.env.NODE_ENV === 'testing') {
-    publicPath = '/crmm' + config.dev.assetsPublicPath
+    publicPath = '/crm' + config.dev.assetsPublicPath
 } else {
     config.dev.assetsPublicPath
 }

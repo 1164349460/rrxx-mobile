@@ -19,8 +19,8 @@
               <span>手机号：{{item.phone}}</span>
             </div>
           </van-col>
-          <van-col span="6" class="cen-talk" @click="handleView(item)">
-            查看
+          <van-col span="6" class="cen-talk">
+            <div @click="handleView(item)">查看</div>
             <van-button size="mini" type="danger" icon="phone-o" @click="handleCall(item)">拨号</van-button>
           </van-col>
         </van-row>

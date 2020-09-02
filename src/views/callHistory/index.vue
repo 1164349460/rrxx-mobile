@@ -1,4 +1,4 @@
-<!-- 岗位列表 -->
+<!-- 呼叫记录 -->
 <template>
   <div>
     <div class="static">
@@ -10,12 +10,12 @@
         <van-row class="cen-list" v-for="(item,index) in dataList" :key="index" @click="getJobDetail(item)">
           <van-col span="18">
             <h4>{{item.customerName}}</h4>
-            <p>{{item.customerPhone}}</p>
+            <p>手机号：{{item.customerPhone}}</p>
             <div>
-              <span>{{item.userName}}</span>
+              <span>拨号时间：{{item.created|time}}</span>
             </div>
           </van-col>
-          <!-- <van-col span="6" class="cen-talk">{{item.SalaryRangeStr}} <p>{{item.DeliveryNum}}人已投递</p></van-col> -->
+          <!-- <van-col span="6" class="cen-talk">{{item.SalaryRangeStr}}  {{item.userName}}<p></p></van-col> -->
         </van-row>
       </van-list>
     </div>
@@ -43,7 +43,7 @@ export default {
       let params = {
         page:this.currPage,
         size:20,
-        locatedId:this.userMessage.id
+        userId:this.userMessage.id
       }
       queryCallrecordOfPage(params).then(res => {
         if (res.code === 0) {

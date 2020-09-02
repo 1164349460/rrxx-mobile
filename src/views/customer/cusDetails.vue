@@ -15,9 +15,11 @@
         <van-field v-model="userInfo.avgPrice" label="均价" />
       </van-form>
     </div>
+     <van-button  type="danger" icon="phone-o" class="cen-phone" @click="handleCall">拨号</van-button>
   </div>
 </template>
 <script>
+import { addCallrecord } from "@/apis/apis";
 export default {
   data() {
     return {
@@ -26,16 +28,33 @@ export default {
   },
   created() {
     this.userInfo = this.$storage.userMessage("customerDetails");
-    console.log(this.userInfo);
+    this.userMessage = this.$storage.userMessage("userMessage");
   },
   methods: {
     onClickLeft() {
       this.$router.go(-1);
     },
+    // 拨号
+    handleCall() {
+      let params = {
+        customerId: this.userInfo.id,
+        customerPhone: this.userInfo.phone,
+        userId: this.userMessage.id,
+      };
+      addCallrecord(params).then((res) => {
+        let a = document.createElement("a");
+        a.setAttribute("href", `tel:${this.userInfo.phone}`);
+        a.click();
+      });
+    },
   },
 };
 </script>
 <style lang="less" scoped>
+.cen-phone{
+  width:100px;
+  margin:0 auto;
+}
 .cen-main {
   margin: 10px 20px;
   padding: 20px 0;
